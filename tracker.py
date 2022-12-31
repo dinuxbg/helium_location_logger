@@ -61,12 +61,26 @@ class Tracker():
             self.conn.commit()
             return cur.lastrowid
 
+    def get_hotspot_id(self, name_str, lat, lng):
+        cur = self.conn.cursor()
+        sel = 'SELECT id FROM hotspot_names WHERE name = ?'
+        cur.execute(sel, (name_str,))
+        result = cur.fetchone()
+        if result is not None:
+            return result[0]
+        else:
+            sql = 'INSERT INTO hotspot_names (name, lat, lng) VALUES (?, ?, ?)'
+            vals = (name_str, lat, lng)
+            cur.execute(sql, vals)
+            self.conn.commit()
+            return cur.lastrowid
+
     # Insert an entry into the hotspot connections table.
     def record_hotspot(self, report_id, rec):
         sql = 'INSERT INTO hotspot_connections (report_id, frequency, name_id, rssi, snr) VALUES (?, ?, ?, ?, ?)'
         vals = (report_id,
                 float(rec['frequency']),
-                self.get_id_from_string('hotspot_names', rec['name']),
+                self.get_hotspot_id(rec['name'], float(rec['lat']), float(rec['long'])),
                 float(rec['rssi']),
                 float(rec['snr']))
         cur = self.conn.cursor()
