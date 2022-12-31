@@ -4,7 +4,7 @@
 
 The [helium_mapper](https://github.com/retfie/helium_mapper) is a neat device firmware for GPS location sharing using [LoRaWAN](https://en.wikipedia.org/wiki/LoRa#LoRaWAN). It works great with the public [Mapper](https://mappers.helium.com/) integration server.
 
-This project provides an alternative to the public [Mapper](https://mappers.helium.com/) integration, which you can run on your own premises. You own data stays on your own equipment.
+This project provides an alternative to the public [Mapper](https://mappers.helium.com/) integration, which you can run on your own premises. Your own data stays on your own equipment.
 
 This server is rather simple. Currently all it does is to record the POSTed location data in a local [SQLite](https://www.sqlite.org) database. Even then, it fulfills my own need to track assets.
 
