@@ -4,6 +4,8 @@
 #
 # Handle JSON data from Helium integration POST
 # requests, parse, and record into an SQL database.
+#
+# sudo apt install python3-pycryptodome
 
 # Assumptions:
 #   - SQL INT can store entire EUI (64-bits).
@@ -12,6 +14,9 @@ import sqlite3
 import base64
 import json
 import struct
+import binascii
+
+from Crypto.Cipher import AES
 
 # Decoded payload from the device.
 class Payload():
@@ -26,6 +31,8 @@ class Payload():
 
     def decode(self, base64_str):
         payload_bin = base64.b64decode(base64_str)
+        if len(payload_bin) == (AES.block_size + AES.key_size[0]):
+            payload_bin = self.decrypt(payload_bin)
         payload_raw = struct.unpack('<iihhhbb', payload_bin)
         self.lat = payload_raw[0] / 100000
         self.lng = payload_raw[1] / 100000
@@ -34,6 +41,16 @@ class Payload():
         self.battery_voltage = payload_raw[4] / 1000
         self.fix = (payload_raw[5] == 0)
         self.satellites = payload_raw[6]
+
+    def decrypt(self, enc):
+        # To create a key use either one of the following commands: 
+        #  $ dd if=/dev/random bs=16 count=1 | xxd -p > payload_aes_key.hex
+        #  $ openssl rand -hex 16 > payload_aes_key.hex
+        with open('payload_aes_key.hex') as f:
+            key = binascii.unhexlify(f.readline().strip())
+        iv = enc[:AES.block_size]
+        cipher = AES.new(key, AES.MODE_CBC, iv)
+        return cipher.decrypt(enc[AES.block_size:])
 
 # Main class for parsing and handling JSON data from the Helium integration
 # POST request.
