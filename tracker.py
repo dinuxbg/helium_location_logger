@@ -16,7 +16,7 @@ import json
 import struct
 import binascii
 
-from Crypto.Cipher import AES
+from Cryptodome.Cipher import AES
 
 # Decoded payload from the device.
 class Payload():
