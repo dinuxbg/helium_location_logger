@@ -28,6 +28,8 @@ class gpx_writer:
             o.write(self.gpx.to_xml())
 
     def add_point(self, lat, lng, alt, accuracy, satellites, time):
+        if satellites < 3:
+            return
         pt = gpxpy.gpx.GPXTrackPoint(latitude=lat,
                                      longitude=lng,
                                      elevation=alt,
