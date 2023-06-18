@@ -152,6 +152,10 @@ class Tracker():
     def record(self, json_str):
         rec = json.loads(json_str)
 
+        if rec['type'] == 'join':
+            print('Received a JOIN packet.')
+            return
+
         payload = Payload()
         payload.decode(rec['payload'])
 

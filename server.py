@@ -34,8 +34,9 @@ class Server(BaseHTTPRequestHandler):
                 str(self.path), str(self.headers), post_data.decode('utf-8'))
         try:
             self.tracker.record(post_data)
-        except:
+        except Exception as e:
             print('Exception occurred with the following json: {}'.format(post_data))
+            print('Exception: ' + str(e))
         logging.info('Received: json: {}'.format(post_data))
         self._set_response()
         self.wfile.write("42".encode('utf-8'))
