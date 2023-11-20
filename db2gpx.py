@@ -79,7 +79,7 @@ def isodate2ms(datestr):
     return datetime.datetime.fromisoformat(datestr).timestamp() * 1000
 
 def ms2time(ms):
-    return datetime.datetime.utcfromtimestamp(ms / 1000)
+    return datetime.datetime.fromtimestamp(ms / 1000, datetime.UTC)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Create a GPX track.')
